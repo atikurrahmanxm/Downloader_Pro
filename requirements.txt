@@ -1,0 +1,7 @@
+flask>=2.3.0
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+yt-dlp>=2024.4.9
+imageio-ffmpeg>=0.5.1
+curl_cffi>=0.7.0
+playwright>=1.40.0

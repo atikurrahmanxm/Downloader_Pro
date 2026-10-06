@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Downloads (keep folder structure empty on git)
+downloads/*
+!downloads/.gitkeep
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Scratch & Temporary
+scratch/
+*.log

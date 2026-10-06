@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Video Downloader</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation -->
+    <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-cloud-arrow-down text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                        MediaGrabber Pro
+                    </h1>
+                    <p class="text-xs text-slate-400">Universal Web Video Downloader</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button id="openFolderBtn" class="flex items-center space-x-2 text-xs sm:text-sm font-medium bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700/80 px-3.5 py-2 rounded-xl transition duration-200 shadow-sm hover:shadow">
+                    <i class="fa-regular fa-folder-open text-amber-400"></i>
+                    <span>Downloads Folder</span>
+                </button>
+                <a href="#downloadsSection" class="relative flex items-center space-x-2 text-xs sm:text-sm font-medium bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-3.5 py-2 rounded-xl transition duration-200">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Tasks</span>
+                    <span id="activeCountBadge" class="hidden ml-1 px-1.5 py-0.2 bg-indigo-500 text-white rounded-full text-xs font-bold">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- Hero & Search Input Card -->
+        <section class="relative rounded-3xl p-6 sm:p-10 bg-gradient-to-b from-slate-900/90 to-slate-900/40 border border-slate-800 shadow-2xl backdrop-blur-xl overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative max-w-3xl mx-auto text-center space-y-4 mb-8">
+                <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <i class="fa-solid fa-bolt-lightning text-amber-400"></i>
+                    <span>Fast Video Scraper & Downloader</span>
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Download Any Video from Any Link
+                </h2>
+                <p class="text-sm sm:text-base text-slate-400">
+                    Paste the webpage URL below. The engine will inspect the page, locate all embedded videos, and extract direct download links in HD quality.
+                </p>
+            </div>
+
+            <!-- URL Input Form -->
+            <form id="scanForm" class="relative max-w-3xl mx-auto">
+                <div class="relative flex flex-col sm:flex-row items-stretch gap-2.5 p-2 bg-slate-950/80 border border-slate-700/80 rounded-2xl shadow-inner focus-within:border-indigo-500/80 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
+                    <div class="flex-1 flex items-center pl-3.5 pr-2">
+                        <i class="fa-solid fa-link text-slate-500 mr-3 text-base"></i>
+                        <input 
+                            type="url" 
+                            id="urlInput" 
+                            placeholder="Paste website link here (e.g., https://www.moviefone.com/videos/movie-clips/)..."
+                            class="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none"
+                            required
+                        >
+                        <button type="button" id="pasteBtn" title="Paste from clipboard" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/60 transition">
+                            <i class="fa-regular fa-paste"></i>
+                        </button>
+                    </div>
+                    <button 
+                        type="submit" 
+                        id="scanBtn" 
+                        class="flex items-center justify-center space-x-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-sm sm:text-base px-6 py-3.5 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30 shrink-0"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Scan Videos</span>
+                    </button>
+                </div>
+
+                <!-- Quick Examples -->
+                <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-slate-400">
+                    <span class="text-slate-500">Quick Test:</span>
+                    <button type="button" class="example-btn hover:text-indigo-400 underline underline-offset-4 decoration-slate-700 font-medium text-emerald-400" data-url="https://www.pexels.com/search/videos/brown%20bear/">
+                        Pexels Bear (4K Free)
+                    </button>
+                    <span>•</span>
+                    <button type="button" class="example-btn hover:text-indigo-400 underline underline-offset-4 decoration-slate-700 font-medium text-cyan-400" data-url="https://mixkit.co/free-stock-video/bear/">
+                        Mixkit Bear (HD Free)
+                    </button>
+                    <span>•</span>
+                    <button type="button" class="example-btn hover:text-indigo-400 underline underline-offset-4 decoration-slate-700 font-medium text-amber-400" data-url="https://pixabay.com/videos/search/bear/">
+                        Pixabay Bear (Free)
+                    </button>
+                    <span>•</span>
+                    <button type="button" class="example-btn hover:text-indigo-400 underline underline-offset-4 decoration-slate-700" data-url="https://www.moviefone.com/videos/movie-clips/">
+                        Moviefone Clips
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Loading State Indicator -->
+        <div id="scanLoading" class="hidden text-center py-12 space-y-4">
+            <div class="inline-block relative">
+                <div class="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fa-solid fa-film text-indigo-400 text-xl"></i>
+                </div>
+            </div>
+            <p class="text-slate-300 font-medium">Inspecting webpage and resolving video streams...</p>
+            <p class="text-xs text-slate-500">Extracting JWPlayer streams, HTML5 tags, and direct CDN links</p>
+        </div>
+
+        <!-- Scan Results Section -->
+        <section id="resultsSection" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>Detected Videos</span>
+                            <span id="resultsCount" class="px-2 py-0.5 text-xs font-semibold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full">0</span>
+                        </h3>
+                        <p id="resultsUrl" class="text-xs text-slate-400 truncate max-w-xl"></p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <label class="flex items-center space-x-2 text-xs sm:text-sm text-slate-300 bg-slate-900 px-3 py-2 rounded-xl border border-slate-800 cursor-pointer hover:bg-slate-800 transition">
+                        <input type="checkbox" id="selectAllCheckbox" class="rounded border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                        <span>Select All</span>
+                    </label>
+                    <button id="downloadSelectedBtn" class="flex items-center space-x-2 text-xs sm:text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download Selected (<span id="selectedCount">0</span>)</span>
+                    </button>
+                    <button id="downloadAllBtn" class="flex items-center space-x-2 text-xs sm:text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl transition shadow-sm">
+                        <i class="fa-solid fa-angles-down"></i>
+                        <span>Download All</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Cards Grid -->
+            <div id="videoCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Live Download Tasks Section -->
+        <section id="downloadsSection" class="space-y-4 pt-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-arrow-down-up-across-line text-indigo-400"></i>
+                    <h3 class="text-lg font-bold text-white">Download Queue & History</h3>
+                </div>
+                <button id="clearCompletedBtn" class="text-xs text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Tasks Container -->
+            <div id="tasksList" class="space-y-3">
+                <div id="emptyTasksNotice" class="text-center py-8 text-slate-500 text-sm bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
+                    <i class="fa-regular fa-circle-down text-2xl mb-2 text-slate-600 block"></i>
+                    No downloads in progress yet. Scan a webpage and click download!
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>MediaGrabber • Saves directly to: <span class="text-slate-400 font-mono text-xs">{{ downloads_dir }}</span></p>
+            <p>Built with Python, Flask & yt-dlp</p>
+        </div>
+    </footer>
+
+    <!-- Video Preview Modal -->
+    <div id="previewModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl space-y-3 p-4">
+            <div class="flex items-center justify-between">
+                <h4 id="previewTitle" class="text-sm font-semibold text-white truncate max-w-md">Video Preview</h4>
+                <button id="closePreviewBtn" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="relative bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                <video id="modalVideoPlayer" controls class="w-full h-full max-h-[60vh] object-contain">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="flex items-center justify-between pt-2 text-xs text-slate-400">
+                <span id="previewQuality" class="font-mono">Quality: Preview</span>
+                <button id="previewDownloadBtn" class="flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition font-medium">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download This Video</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- Application Script -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
