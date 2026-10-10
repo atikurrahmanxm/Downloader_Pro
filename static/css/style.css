@@ -1,17 +1,16 @@
-/* Custom styles & animations */
-@keyframes pulseSlow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+/* ==========================================================================
+   Downloader Pro - Modern Dashboard Styles
+   ========================================================================== */
+
+/* Custom Smooth Transitions */
+* {
+    scroll-behavior: smooth;
 }
 
-.animate-pulse-slow {
-    animation: pulseSlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Custom scrollbars */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
 }
 ::-webkit-scrollbar-track {
     background: #090d16;
@@ -24,28 +23,81 @@
     background: #334155;
 }
 
-/* Card hover animation */
+/* Platform Pills */
+.platform-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    border-width: 1px;
+    letter-spacing: -0.01em;
+    transition: all 0.2s ease;
+    cursor: default;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.platform-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Video Card Aesthetics */
 .video-card {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+    will-change: transform;
 }
 .video-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.6), 0 0 16px -2px rgba(99, 102, 241, 0.15);
-    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.7), 0 0 20px -3px rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
 }
 
-/* Toast styles */
+/* Animated Progress Bar Shimmer */
+@keyframes progressShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.progress-active {
+    background-image: linear-gradient(
+        90deg,
+        rgba(99, 102, 241, 1) 0%,
+        rgba(168, 85, 247, 1) 40%,
+        rgba(236, 72, 153, 0.9) 60%,
+        rgba(99, 102, 241, 1) 100%
+    );
+    background-size: 200% 100%;
+    animation: progressShimmer 2.5s ease-in-out infinite;
+}
+
+/* Toast Notification Animation */
 .toast {
-    animation: slideIn 0.25s ease-out forwards;
+    animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes slideIn {
+@keyframes slideUpFade {
     from {
-        transform: translateY(20px);
+        transform: translateY(24px) scale(0.95);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
+}
+
+/* Subtle Pulse */
+@keyframes softPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.75; transform: scale(1.02); }
+}
+
+.pulse-soft {
+    animation: softPulse 2.5s ease-in-out infinite;
 }

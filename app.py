@@ -10,6 +10,8 @@ from downloader import (
     get_all_tasks,
     cancel_download,
     open_downloads_folder,
+    open_file_by_task,
+    clear_completed_tasks,
     DOWNLOADS_DIR
 )
 
@@ -96,6 +98,22 @@ def cancel_task(task_id):
 def open_folder():
     ok = open_downloads_folder()
     return jsonify({"success": ok, "path": DOWNLOADS_DIR})
+
+
+@app.route("/api/open-file", methods=["POST"])
+def open_file():
+    data = request.get_json() or {}
+    task_id = data.get("task_id", "").strip()
+    if not task_id:
+        return jsonify({"success": False, "error": "Task ID required."}), 400
+    ok = open_file_by_task(task_id)
+    return jsonify({"success": ok})
+
+
+@app.route("/api/clear-completed", methods=["POST"])
+def clear_completed():
+    clear_completed_tasks()
+    return jsonify({"success": True})
 
 
 def open_browser(port):
